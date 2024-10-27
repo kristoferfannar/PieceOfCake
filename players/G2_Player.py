@@ -29,6 +29,7 @@ class G2_Player:
         self.tolerance = tolerance
         self.cake_len = None
         self.move_queue = []
+        self.move_queue = []
 
     def cut(self, cake_len, cake_width, cur_pos) -> (int, List[int]):
         if cur_pos[0] == 0:
