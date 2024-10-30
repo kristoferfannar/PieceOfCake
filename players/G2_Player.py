@@ -39,14 +39,49 @@ class G2_Player:
         self.rng = rng
         self.logger = logger
         self.tolerance = tolerance
-        self.cake_len = None
-        self.cake_width = None
+        self.cake_len = 20
+        self.cake_width = 40
         self.move_queue = []
 
         self.strategy = Strategy.SNEAK
         self.move_object = None
 
-    def cut(self, cake_len, cake_width, cur_pos) -> tuple[int, List[int]]:
+    def cut(self, cut_position):
+        if self.cake_width * self.cake_len < 860:
+            cuts = self.sawtooth_cut(self.cake_width, self.cake_len)
+            for cut in cuts:
+                self.make_cut(cut) 
+        else:
+            cuts= self.bigcakecuts(self, self.cake_len, self.cake_width, cut_position) 
+
+    def make_cut(self, cut_position):
+        # Logic for executing a cut at cut_position
+        print(f"Cutting at position: {cut_position}")
+    
+    def sawtooth_cut(self, cake_width, cake_len):
+        slice_height = 1.6  
+        cuts = []  
+        current_y = 0  # Starting from the top
+
+        while current_y < self.cake_len:
+            # Cut horizontally
+            cuts.append((0, current_y))  # Start from the left edge
+            cuts.append((self.cake_width, current_y))  # Cut to the right edge
+            current_y += slice_height  # Move down by slice height
+
+            # If we've reached the end of the cake, break
+            if current_y >= self.cake_len:
+                break
+
+            # Cut horizontally back
+            cuts.append((self.cake_width, current_y))  # Start from the right edge
+            cuts.append((0, current_y))  # Cut to the left edge
+            current_y += slice_height  # Move down by slice height
+
+        return cuts
+
+
+    def bigcakecuts(self, cake_len, cake_width, cur_pos) -> tuple[int, List[int]]:
         if cur_pos[0] == 0:
             return constants.CUT, [cake_width, round((cur_pos[1] + 5) % cake_len, 2)]
         else:
@@ -147,3 +182,5 @@ class G2_Player:
 
         # default
         return self.climb_hills()
+
+    
